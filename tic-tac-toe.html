@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fantasy Realm - Tic Tac Toe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Uncial+Antiqua&display=swap" rel="stylesheet" />
+    <link rel="icon" href="assets/img/logoo.png" type="image/x-icon">
+    <style>
+        :root {
+            --purple: #6a0dad;
+            --purple-dark: #4b007d;
+            --bg-light: #f8f4f8;
+            --bg-dark: #1a1a2e;
+            --text-light: #222222;
+            --text-dark: #e0dcdc;
+            --header-bg-light: #bb86fc;
+            --header-bg-dark: #3a235e;
+            --nav-link-light: #53007a;
+            --nav-link-dark: #a78bff;
+            --scroll-btn-bg: #6a0dad;
+            --scroll-btn-arrow: #000000;
+
+            --user-color: #d147a3;
+            /* pinkish for user */
+            --opponent-color: #4b007d;
+            /* dark purple for opponent */
+            --strike-color: #ff0000;
+        }
+
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: var(--bg);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 80%;
+            text-align: center;
+            position: relative;
+            border: 3px solid var(--purple);
+            box-shadow: 0 0 20px var(--purple);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .modal.show {
+            opacity: 1;
+            display: flex;
+        }
+
+        /* Стилі для кнопки Restart у модальному вікні */
+        .modal-restart-btn {
+            margin: 1rem auto 0 auto;
+            padding: 0.6rem 1.8rem;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            background-color: var(--purple);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(106, 13, 173, 0.7);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .modal-restart-btn:hover,
+        .modal-restart-btn:focus {
+            background-color: var(--purple-dark);
+            transform: scale(1.05);
+            outline: none;
+        }
+
+        /* Adjust the result message styling */
+        #resultMessage {
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        @media (max-width: 600px) {
+            main {
+                padding: 1rem;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+
+
+        /* Додайте до вашого CSS */
+        button {
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background-color: var(--purple-dark);
+        }
+
+        [data-theme="dark"] {
+            --bg: var(--bg-dark);
+            --text-color: var(--text-dark);
+            --header-bg: var(--header-bg-dark);
+            --nav-link-color: var(--nav-link-dark);
+            --board-bg: #2a2752;
+        }
+
+        [data-theme="light"] {
+            --bg: var(--bg-light);
+            --text-color: var(--text-light);
+            --header-bg: var(--header-bg-light);
+            --nav-link-color: var(--nav-link-light);
+            --board-bg: #fff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Cinzel', serif;
+            background-color: var(--bg);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            color: var(--nav-link-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        a:hover,
+        a:focus {
+            color: var(--purple-dark);
+            outline: none;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            background-color: var(--header-bg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: 'Uncial Antiqua', cursive;
+            font-size: 1.8rem;
+            color: #fff;
+        }
+
+        nav {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1rem;
+        }
+
+        nav a[aria-current="page"] {
+            font-weight: 700;
+        }
+
+        .theme-toggle-btn {
+            background-color: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 16px;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .theme-toggle-btn:hover,
+        .theme-toggle-btn:focus {
+            background-color: #fff;
+            color: var(--purple);
+            outline: none;
+        }
+
+        main {
+            flex-grow: 1;
+            max-width: 480px;
+            margin: 2rem auto 4rem auto;
+            padding: 0 1rem;
+            display: flex;
+            flex-direction: column;
+            /* gap: 1.5rem; */
+        }
+
+        h1 {
+            font-family: 'Uncial Antiqua', cursive;
+            color: var(--purple);
+            text-shadow: 1px 1px 3px rgba(106, 13, 173, 0.7);
+            text-align: center;
+            font-size: 2.5rem;
+        }
+
+        .select-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .race-select {
+            flex: 1 1 45%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-family: 'Uncial Antiqua', cursive;
+            font-size: 1.1rem;
+            color: var(--purple);
+            margin-bottom: 0.3rem;
+        }
+
+        select {
+            font-size: 1rem;
+            padding: 0.4rem;
+            border-radius: 8px;
+            border: 2px solid var(--purple);
+            background-color: var(--board-bg);
+            color: var(--text-color);
+            font-family: 'Cinzel', serif;
+            cursor: pointer;
+        }
+
+        button#startButton {
+            margin: 1.5rem auto 0 auto;
+            padding: 0.6rem 1.8rem;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            background-color: var(--purple);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(106, 13, 173, 0.7);
+            transition: background-color 0.3s ease;
+            align-self: center;
+        }
+
+        button#startButton:hover,
+        button#startButton:focus {
+            background-color: var(--purple-dark);
+            outline: none;
+        }
+
+        #gameBoard {
+            display: none;
+            margin-top: 1rem;
+            background-color: var(--board-bg);
+            border: 4px solid var(--purple);
+            width: 100%;
+            max-width: 480px;
+            aspect-ratio: 1/1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 6px;
+            border-radius: 16px;
+            box-shadow: 0 0 18px var(--purple);
+            user-select: none;
+        }
+
+        #scoreboard {
+            display: flex;
+            justify-content: center;
+            gap: 1.2rem;
+            margin-top: 1rem;
+            font-family: 'Uncial Antiqua', cursive;
+            font-size: 1.1rem;
+            color: var(--purple);
+            user-select: none;
+        }
+
+        #scoreboard div {
+            background-color: #1a1a2e;
+            padding: 0.3rem 0.8rem;
+            border: 2px solid var(--purple);
+            border-radius: 10px;
+            min-width: 80px;
+            text-align: center;
+            box-shadow: 0 0 10px var(--purple);
+        }
+
+        .cell {
+            border: 3px solid var(--purple);
+            border-radius: 12px;
+            background-color: var(--bg);
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--user-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
+
+        .cell:focus {
+            outline: 3px solid var(--purple-dark);
+        }
+
+        .cell.occupied {
+            cursor: default;
+        }
+
+        .cell.opponent {
+            color: var(--opponent-color);
+        }
+
+        /* Strike-through line for winning */
+        #strikeLine {
+            position: absolute;
+            pointer-events: none;
+            stroke: var(--strike-color);
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: opacity 0.3s ease;
+        }
+
+        #strikeCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        #resultMessage {
+            margin-top: 1rem;
+            font-family: 'Uncial Antiqua', cursive;
+            font-size: 1.5rem;
+            color: var(--purple-dark);
+            text-align: center;
+            min-height: 2em;
+            user-select: none;
+        }
+
+        /* button#restartButton {
+            margin: 1rem auto 0 auto;
+            padding: 0.5rem 1.5rem;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1rem;
+            border-radius: 8px;
+            background-color: var(--purple);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 3px 7px rgba(106, 13, 173, 0.7);
+            transition: background-color 0.3s ease;
+            display: none;
+        }
+
+        button#restartButton:hover,
+        button#restartButton:focus {
+            background-color: var(--purple-dark);
+            outline: none;
+        } */
+
+        /* @media (max-width: 600px) {
+            main {
+                max-width: 100%;
+            }
+
+            button#startButton,
+            button#restartButton {
+                width: 90%;
+            }
+        } */
+
+        footer {
+            background-color: var(--header-bg);
+            color: #fff;
+            text-align: center;
+            padding: 0.8rem;
+            font-size: 0.9rem;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        #scrollTopBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--scroll-btn-bg);
+            border: none;
+            padding: 16px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+            z-index: 10000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+            transition: background-color 0.3s ease;
+        }
+
+        #scrollTopBtn:hover,
+        #scrollTopBtn:focus {
+            background-color: #4b007d;
+            outline: none;
+        }
+
+        #scrollTopBtn::before {
+            content: "";
+            display: inline-block;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 14px solid var(--scroll-btn-arrow);
+            margin-left: 0px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo" tabindex="0">Fantasy Realm</div>
+        <nav>
+            <a data-i18n="home" href="index.html">Home</a>
+            <a data-i18n="elves" href="elves.html">Elves</a>
+            <a data-i18n="dwarves" href="dwarves.html">Dwarves</a>
+            <a data-i18n="orcs" href="orcs.html">Orcs</a>
+            <a data-i18n="dragons" href="dragons.html">Dragons</a>
+            <a data-i18n="tic-tac-toe" href="tic-tac-toe.html" aria-current="page">Tic Tac Toe</a>
+            <a href="quest.html">Quest Adventure</a>
+        </nav>
+        <div class="header-btn">
+            <button id="languageToggle" class="theme-toggle-btn">UA</button>
+            <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme">Dark Mode</button>
+        </div>
+
+    </header>
+
+
+    <main>
+
+        <img id="backgroundphoto" src="./assets/img/home 4 (1).png">
+        <style>
+            #backgroundphoto {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                z-index: -1;
+                /* Задній план */
+            }
+        </style>
+        <div style="background-color: #1a1a2e; padding: 36px 24px; border-radius: 12px;">
+            <h1 data-i18n="ticTacToetitle" style="padding-bottom: 24px;">Tic Tac Toe - Choose Your Race</h1>
+            <div id="selectionContainer">
+                <div class="select-container">
+                    <div class="race-select">
+                        <label for="userRace" data-i18n="ticTacToeplayYourRace">Your Race:</label>
+                        <select id="userRace" aria-label="Select your race">
+                            <option data-i18n="ticTacToeplayElves" value="Elves" selected>Elves</option>
+                            <option data-i18n="ticTacToeplayDwarves" value="Dwarves">Dwarves</option>
+                            <option data-i18n="ticTacToeplayOrcs" value="Orcs">Orcs</option>
+                            <option data-i18n="ticTacToeplayDragons" value="Dragons">Dragons</option>
+                        </select>
+                    </div>
+                    <div class="race-select">
+                        <label for="opponentRace" data-i18n="ticTacToeplayOpponent">Opponent Race:</label>
+                        <select id="opponentRace" aria-label="Select opponent race">
+                            <option data-i18n="ticTacToeplayOrcs" value="Orcs" selected>Orcs</option>
+                            <option data-i18n="ticTacToeplayElves" value="Elves">Elves</option>
+                            <option data-i18n="ticTacToeplayDwarves" value="Dwarves">Dwarves</option>
+                            <option data-i18n="ticTacToeplayDragons" value="Dragons">Dragons</option>
+                        </select>
+                    </div>
+                </div>
+                <button id="startButton" aria-label="Start game" data-i18n="ticTacToeplayButton">Start Game</button>
+            </div>
+        </div>
+
+        <div id="gameContainer" style="position: relative;">
+            <div id="gameBoard" role="grid" aria-label="Tic Tac Toe game board" tabindex="0">
+                <!-- Джава код тут -->
+            </div>
+            <svg id="strikeCanvas" aria-hidden="true" width="100%" height="100%"
+                style="position:absolute; top:0; left:0; z-index:10; pointer-events:none;">
+                <line id="strikeLine" x1="0" y1="0" x2="0" y2="0" style="opacity: 0;"></line>
+            </svg>
+        </div>
+
+
+        <div id="scoreboard" aria-label="Races win scoreboard">
+            <div data-i18n="ticTacToeplayElvesScore" id="score-elves">Elves: 0</div>
+            <div data-i18n="ticTacToeplayOrcsScore" id="score-orcs">Orcs: 0</div>
+            <div data-i18n="ticTacToeplayDragonsScore" id="score-dragons">Dragons: 0</div>
+            <div data-i18n="ticTacToeplayDwarvesScore" id="score-dwarves">Dwarves: 0</div>
+        </div>
+        <!-- Add this at the bottom of your main content, before the scoreboard -->
+        <div id="gameModal" class="modal" aria-hidden="true" style="display: none;">
+            <div class="modal-content">
+                <div id="resultMessage" aria-live="polite"></div>
+                <button id="restartButton" class="modal-restart-btn" aria-label="Restart game"
+                    data-i18n="ticTacToeplayRestart">Restart Game</button>
+            </div>
+        </div>
+
+
+
+    </main>
+
+
+
+
+    <button id="scrollTopBtn" aria-label="Scroll to top"></button>
+
+    <footer style="margin-top: 0; ">
+        &copy; 2025 Fantasy Realm. All rights reserved by Maksym Chiachakov :)
+    </footer>
+
+    <script src="tic-tac-toe.js"></script>
+
+</body>
+
+</html>
