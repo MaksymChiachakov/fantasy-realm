@@ -29,7 +29,7 @@ const characters = [
         name: 'ОРК',
         image: 'static/img/orc.jpeg',
         bg: 'url("static/img/orcs wallpaper 3.jpeg")',
-        description: 'Орки - жорстокі воїни, що живуть у суворих горах. Відомі своєю силою та агресивністю. Використовують примітивну, але ефективну зброю. Живуть кланами під керівництвом найсильніших.',
+        description: 'Орки - жорстокі воїни, що живуть у горах. Відомі своєю силою та агресивністю. Використовують примітивну, але ефективну зброю. Живуть кланами під керівництвом найсильніших.',
         sound: 'static/audio/orc.mp3',
         stats: {
             strength: 76,
@@ -135,12 +135,9 @@ document.getElementById('startBtn').addEventListener('click', function () {
     document.getElementById('playerCharacterImg').src = selectedCharacter.image;
     document.getElementById('enemyCharacterImg').src = enemyCharacter.image;
 
-    // Інші ваші дії для старту гри
 });
 
 function getEnemyCharacter(playerCharId) {
-    // Ваша логіка вибору противника
-    // Наприклад:
     const enemies = {
         'ork': characters.find(c => c.id === 'elf'),
         'elf': characters.find(c => c.id === 'ork'),
@@ -150,9 +147,8 @@ function getEnemyCharacter(playerCharId) {
     return enemies[playerCharId] || characters[0];
 }
 
-// Додайте цей код у ваш tic-tac-toe.js або main.js
 function typeWriterEffect() {
-    const welcomeText = document.getElementById('mainText'); // Припустимо, що у вас є елемент з таким id
+    const welcomeText = document.getElementById('mainText');
     const fullText = "ЛАСКАВО ПРОСИМО\nВи будете грати у Fantasy Realm.";
     let i = 0;
     const speed = 50; // Швидкість друку (мілісекунди)
@@ -295,19 +291,15 @@ function returnToSelection() {
 
     // Після завершення анімації
     setTimeout(() => {
-        // Ховаємо екран деталей
         characterDetail.style.display = 'none';
         // characterDetail.classList.remove('slide-down', 'slide-up', 'fade-in');
 
-        // Показуємо секцію з персонажами з анімацією
         characterSection.style.display = 'flex';
         // characterSection.classList.remove('slide-down', 'slide-up', 'fade-in');
         characterSection.classList.add('fade-in');
 
-        // Скидаємо фон на базовий
         // document.body.style.backgroundImage = 'linear-gradient(135deg, #5e2a6c, #8e44ad)';
 
-        // Очищаємо будь-які стани гри, якщо вони були
         const gameScreen = document.getElementById('gameScreen');
         gameScreen.style.display = 'none';
     }, 300);
@@ -316,9 +308,7 @@ function returnToSelection() {
 
 
 
-// Замініть існуючий код для кнопки "Почати гру" на цей:
 document.getElementById('startBtn').addEventListener('click', function () {
-    // Беремо поточного персонажа з масиву за індексом
     const selectedCharacter = characters[currentCharacterIndex];
 
     // Передаємо його в гру
@@ -335,14 +325,12 @@ document.getElementById('startBtn').addEventListener('click', function () {
     }, 500);
 });
 
-// Функція для ініціалізації гри (приклад)
+// Функція для ініціалізації гри 
 function initGame() {
     console.log("Гра почалася!");
-    // Тут ваш код для ініціалізації гри
 }
 
 // test
-// В кінці файлу main.js додаємо:
 
 // Ініціалізація радар-діаграми
 function initRadarChart(character) {

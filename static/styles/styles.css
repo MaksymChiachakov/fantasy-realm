@@ -518,9 +518,56 @@ html {
     gap: 20px;
   }
 
+  body {
+    background-position: 50% center;
+  }
+
+  .timer-bar {
+    padding-left: 36px;
+    padding-right: 24px;
+  }
+
+  .character-title {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .detail-container {
+    height: 81%;
+  }
+
+  .character-stats {
+    max-height: 375px;
+  }
+
+  .character-description {
+    font-size: 16px;
+  }
+
+  .nav-arrow {
+    margin-top: 24px;
+  }
+
+  .character-actions {
+    margin-top: 24px;
+  }
+
+  .stats-grid {
+    margin-bottom: 1rem;
+  }
+
+  .detail-image {
+    width: 480px;
+    height: 300px;
+  }
+
   .character-display img {
-    width: 280px;
-    height: 280px;
+    width: 280px !important;
+    height: 280px !important;
+  }
+
+  .timer-progress {
+    width: 70%;
   }
 
   .character-display .stats .race-name {
@@ -742,6 +789,11 @@ html {
   .character-section {
     padding-top: 20px;
     padding-bottom: 20px;
+  }
+
+  .detail-image {
+    width: 400px;
+    height: 200px;
   }
 
   .characters-container {
