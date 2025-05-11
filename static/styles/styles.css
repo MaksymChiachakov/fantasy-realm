@@ -510,6 +510,272 @@ html {
   padding: 0 20px;
 }
 
+/* Загальні медіа-запити для адаптації */
+@media (max-width: 1200px) {
+
+  /* Ноутбуки */
+  .game-layout {
+    gap: 20px;
+  }
+
+  .character-display img {
+    width: 280px;
+    height: 280px;
+  }
+
+  .character-display .stats .race-name {
+    font-size: 1.5rem;
+  }
+
+  .character-display .stats .score {
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 992px) {
+
+  /* Невеликі ноутбуки та планшети в альбомній орієнтації */
+  .game-layout {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .character-display {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .character-display img {
+    width: 250px;
+    height: 250px;
+  }
+
+  .game-center {
+    order: -1;
+    min-width: auto;
+    width: 100%;
+    max-width: 450px;
+  }
+
+  #gameBoard {
+    max-width: 400px;
+  }
+
+  .cell {
+    font-size: 3rem;
+  }
+
+  .abilities-container {
+    position: static;
+    transform: none;
+    margin-top: 20px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* Планшети та великі телефони */
+  .welcome-text {
+    font-size: 36px;
+  }
+
+  .sub-text {
+    font-size: 18px;
+  }
+
+  .characters-container {
+    gap: 15px;
+  }
+
+  .character-arch {
+    width: 150px;
+    height: 225px;
+  }
+
+  .character-name {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  #gameBoard {
+    max-width: 350px;
+  }
+
+  .cell {
+    font-size: 2.5rem;
+  }
+
+  .character-stats {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .rules-content {
+    margin: 20px auto;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 576px) {
+
+  /* Телефони */
+  .welcome-text {
+    font-size: 28px;
+  }
+
+  .sub-text {
+    font-size: 16px;
+  }
+
+  .character-arch {
+    width: 120px;
+    height: 180px;
+  }
+
+  #gameBoard {
+    max-width: 300px;
+  }
+
+  .cell {
+    font-size: 2rem;
+    border-width: 2px;
+  }
+
+  #scoreboard {
+    gap: 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  #scoreboard div {
+    min-width: 70px;
+    padding: 0.2rem 0.6rem;
+  }
+
+  .character-display img {
+    width: 200px;
+    height: 200px;
+  }
+
+  .character-display .stats .race-name {
+    font-size: 1.2rem;
+  }
+
+  .character-display .stats .score {
+    font-size: 1.8rem;
+  }
+
+  .abilities-container {
+    padding: 10px;
+  }
+
+  .ability-info {
+    font-size: 1em;
+  }
+
+  .rules-btn {
+    font-size: 14px;
+    padding: 8px 16px;
+    left: 10px;
+    bottom: 10px;
+  }
+}
+
+@media (max-width: 400px) {
+
+  /* Дуже малі телефони */
+  #gameBoard {
+    max-width: 280px;
+  }
+
+  .cell {
+    font-size: 1.8rem;
+  }
+
+  .character-arch {
+    width: 100px;
+    height: 150px;
+  }
+
+  .character-name {
+    font-size: 12px;
+  }
+
+  .modal-content {
+    padding: 1rem;
+  }
+
+  .modal-btn {
+    min-width: 120px;
+    padding: 0.6rem 1rem;
+  }
+}
+
+/* Спеціальні стилі для висоти екрану */
+@media (max-height: 700px) {
+  .character-section {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .characters-container {
+    margin-top: 20px;
+  }
+
+  .character-arch {
+    width: 140px;
+    height: 210px;
+  }
+
+  .game-layout {
+    gap: 15px;
+  }
+
+  .character-display img {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+/* Горизонтальна орієнтація на телефонах */
+@media (max-width: 992px) and (orientation: landscape) {
+  .character-section {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .characters-container {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-top: 20px;
+  }
+
+  .character-arch {
+    flex: 0 0 auto;
+    width: 120px;
+    height: 180px;
+  }
+
+  .game-layout {
+    flex-direction: row;
+    gap: 15px;
+  }
+
+  .character-display {
+    max-width: 200px;
+  }
+
+  .character-display img {
+    width: 150px;
+    height: 150px;
+  }
+
+  #gameBoard {
+    max-width: 300px;
+  }
+}
+
 /* Game Screen */
 #gameScreen {
   transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
