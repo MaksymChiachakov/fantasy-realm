@@ -4,566 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Гра Раз</title>
-    <style>
-        body,
-        html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow-x: hidden;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #5e2a6c, #8e44ad);
-            color: white;
-            transition: background-image 0.5s ease;
-        }
-
-        :root {
-            --user-color: #e74c3c;
-            --opponent-color: #3498db;
-            --board-bg: #1a1a2e;
-            --purple: #8e44ad;
-            --purple-dark: #5e2a6c;
-            --strike-color: #f1c40f;
-            --bg: #16213e;
-        }
-
-        /* Welcome Screen */
-        .welcome-screen {
-            position: relative;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            transition: all 1s ease;
-        }
-
-        .welcome-text {
-            font-size: 48px;
-            font-weight: bold;
-            margin: 0;
-            opacity: 1;
-            transition: all 1s ease;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .sub-text {
-            margin-top: 20px;
-            font-size: 24px;
-            opacity: 1;
-            transition: all 1s ease;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-        }
-
-        .arrow {
-            font-size: 40px;
-            margin-top: 40px;
-            cursor: pointer;
-            animation: bounce 1.5s infinite;
-        }
-
-        @keyframes bounce {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(10px);
-            }
-        }
-
-        /* Character Selection */
-        .character-section {
-            display: flex;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            overflow: hidden;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            animation: none !important;
-            transition: none !important;
-            padding: 20px;
-        }
-
-        .slide-up,
-        .slide-down,
-        .fade-in {
-            animation: none !important;
-            opacity: 1 !important;
-            transform: none !important;
-        }
-
-        /* Game Board */
-        #gameBoard {
-            position: relative;
-            margin-top: 1rem;
-            background-color: var(--board-bg);
-            border: 4px solid var(--purple);
-            width: 100%;
-            max-width: 480px;
-            aspect-ratio: 1/1;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: 6px;
-            /* тест */
-            transition: all 0.3s ease;
-            border-radius: 16px;
-            box-shadow: 0 0 18px var(--purple);
-            user-select: none;
-        }
-
-        #scoreboard {
-            display: flex;
-            justify-content: center;
-            gap: 1.2rem;
-            margin-top: 1rem;
-            font-family: 'Uncial Antiqua', cursive;
-            font-size: 1.1rem;
-            color: var(--purple);
-            user-select: none;
-        }
-
-        #scoreboard div {
-            background-color: #1a1a2e;
-            padding: 0.3rem 0.8rem;
-            border: 2px solid var(--purple);
-            border-radius: 10px;
-            min-width: 80px;
-            text-align: center;
-            box-shadow: 0 0 10px var(--purple);
-        }
-
-        .cell {
-            border: 3px solid var(--purple);
-            border-radius: 12px;
-            background-color: var(--bg);
-            font-size: 3.5rem;
-            font-weight: 900;
-            color: var(--user-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            position: relative;
-            transition: background-color 0.3s ease;
-        }
-
-        .cell:focus {
-            outline: 3px solid var(--purple-dark);
-        }
-
-        .cell.occupied {
-            cursor: default;
-        }
-
-        .cell.opponent {
-            color: var(--opponent-color);
-        }
-
-        /* Strike-through line for winning */
-        #strikeLine {
-            position: absolute;
-            pointer-events: none;
-            stroke: var(--strike-color);
-            stroke-width: 8;
-            stroke-linecap: round;
-            transition: opacity 0.3s ease;
-        }
-
-        #strikeCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        #resultMessage {
-            margin-top: 1rem;
-            font-family: 'Uncial Antiqua', cursive;
-            font-size: 1.5rem;
-            color: var(--purple-dark);
-            text-align: center;
-            min-height: 2em;
-            user-select: none;
-        }
-
-        /* Character Selection styles */
-        .characters-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 30px;
-            margin-top: 40px;
-        }
-
-        .character-arch {
-            width: 200px;
-            height: 300px;
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            position: relative;
-        }
-
-        .character-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: top;
-        }
-
-        .character-name {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
-            text-align: center;
-            font-size: 18px;
-            transform: translateY(100%);
-            transition: transform 0.3s;
-        }
-
-        .character-arch:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-        }
-
-        .character-arch:hover .character-name {
-            transform: translateY(0);
-        }
-
-        /* Character Detail */
-        .character-detail {
-            display: none;
-            height: 100vh;
-            padding: 40px;
-            background-size: cover;
-            background-position: center;
-            color: white;
-        }
-
-        .detail-container {
-            display: flex;
-            height: 80%;
-            margin-top: 40px;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 20px;
-            overflow: hidden;
-        }
-
-        .character-view {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .detail-image {
-            width: 80%;
-            max-height: 400px;
-            object-fit: cover;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-        }
-
-        .character-nav {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .nav-arrow {
-            font-size: 30px;
-            cursor: pointer;
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            transition: all 0.3s;
-        }
-
-        .nav-arrow:hover {
-            background: rgba(255, 255, 255, 0.4);
-        }
-
-        .character-info {
-            flex: 1;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .character-title {
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
-
-        .character-description {
-            font-size: 18px;
-            line-height: 1.6;
-        }
-
-        .character-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .action-btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .start-btn {
-            background: #8e44ad;
-            color: white;
-        }
-
-        .cancel-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            font-size: 30px;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.2);
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 50%;
-            transition: all 0.3s;
-        }
-
-        .close-btn:hover {
-            background: rgba(255, 255, 255, 0.4);
-        }
-
-
-
-        /* Game Screen */
-        #gameScreen {
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            width: 100vw;
-            position: fixed;
-            top: 0;
-            left: 0;
-            overflow: hidden;
-        }
-
-        .cell {
-            position: relative;
-            border: 3px solid var(--purple);
-            border-radius: 12px;
-            background-color: var(--bg);
-            font-size: 3.5rem;
-            font-weight: 900;
-            color: var(--user-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            aspect-ratio: 1/1;
-        }
-
-        /* Стилі для лінії перемоги */
-        #lineCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 480px;
-            height: 480px;
-            pointer-events: none;
-        }
-
-        #lineCanvas line {
-            stroke: var(--strike-color);
-            stroke-width: 8;
-            stroke-linecap: round;
-            transition: opacity 0.3s ease;
-        }
-
-        .game-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 500px;
-            padding: 20px;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-            transform: translateX(0);
-            opacity: 1;
-        }
-
-
-        /* Animations */
-        .hidden {
-            opacity: 0;
-            transform: translateY(-100px);
-        }
-
-        .slide-down {
-            animation: slideDown 1s ease forwards;
-        }
-
-        .slide-up {
-            animation: slideUp 1s ease forwards;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(0);
-                opacity: 1;
-            }
-
-            to {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-        }
-
-        .fade-in {
-            animation: fadeIn 1s ease forwards;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(-100%);
-            }
-
-            to {
-                transform: translateY(0);
-            }
-        }
-
-        /* Modal styles */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background-color: #2c3e50;
-            padding: 2rem;
-            border-radius: 10px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-
-        .modal-restart-btn {
-            background-color: #8e44ad;
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            font-size: 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 1rem;
-            transition: all 0.3s;
-        }
-
-        .modal-restart-btn:hover {
-            background-color: #9b59b6;
-            transform: translateY(-2px);
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .modal-btn {
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            min-width: 150px;
-        }
-
-        .modal-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        #restartButton {
-            background-color: #8e44ad;
-            color: white;
-        }
-
-        #backButton {
-            background-color: #34495e;
-            color: white;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Uncial+Antiqua&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/styles/styles.css" />
+    <link rel="icon" href="static/img/logoo.png" type="image/x-icon">
+    <title>Fantasy Realm</title>
 </head>
 
 <body>
     <!-- Welcome Screen -->
     <div class="welcome-screen" id="welcomeScreen">
-        <h1 class="welcome-text" id="mainText">ЛАСКАВО ПРОСИМО</h1>
-        <p class="sub-text" id="subText">Ви будете грати у гру рас</p>
+        <h1 class="welcome-text" id="mainText"></h1>
         <div class="arrow" id="arrow">&#8595;</div>
     </div>
 
@@ -571,23 +21,24 @@
     <div class="character-section" id="characterSection">
         <h1 class="welcome-text">ОБЕРІТЬ ПЕРСОНАЖА</h1>
         <div class="characters-container">
-            <div class="character-arch" data-char="ork" data-bg="url('orcs wallpaper 3.jpg')">
-                <img src="orc.jpeg" class="character-image">
+            <div class="character-arch" data-char="ork" data-bg="url('static/img/orcs wallpaper 3.jpeg')">
+                <img src="static/img/orc.jpeg" class="character-image">
                 <div class="character-name">ОРК</div>
             </div>
-            <div class="character-arch" data-char="dragon" data-bg="url('dragon wallpaper 4.jpg')">
-                <img src="dragon.avif" class="character-image">
+            <div class="character-arch" data-char="dragon" data-bg="url('static/img/dragon wallpaper 4.jpg')">
+                <img src="static/img/dragon.avif" class="character-image">
                 <div class="character-name">ДРАКОН</div>
             </div>
-            <div class="character-arch" data-char="elf" data-bg="url('elf wallpaper.jpg')">
-                <img src="elf 2.jpg" class="character-image">
+            <div class="character-arch" data-char="elf" data-bg="url('static/img/elf wallpaper.jpg')">
+                <img src="static/img/elf 2.jpg" class="character-image">
                 <div class="character-name">ЕЛЬФ</div>
             </div>
-            <div class="character-arch" data-char="gnome" data-bg="url('dwarve wallpaper.webp')">
-                <img src="dwarve.webp" class="character-image">
+            <div class="character-arch" data-char="gnome" data-bg="url('static/img/dwarve wallpaper.webp')">
+                <img src="static/img/dwarve.webp" class="character-image">
                 <div class="character-name">ГНОМ</div>
             </div>
         </div>
+        <button class="rules-btn" id="rulesBtn">📜 Правила гри</button>
     </div>
 
     <!-- Character Detail -->
@@ -596,7 +47,7 @@
         <h1 class="welcome-text" id="detailTitle">ОРК</h1>
         <div class="detail-container">
             <div class="character-view">
-                <img src="orc.jpeg" class="detail-image" id="detailImage">
+                <img src="static/img/orc.jpeg" class="detail-image" id="detailImage">
                 <div class="character-nav">
                     <div class="nav-arrow" id="prevChar">&#8592;</div>
                     <div class="nav-arrow" id="nextChar">&#8594;</div>
@@ -610,6 +61,24 @@
                         Використовують примітивну, але ефективну зброю. Живуть кланами під керівництвом найсильніших
                         воїнів.
                     </p>
+                    <div class="character-stats">
+                        <h3>Характеристики</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item" data-stat="strength">
+                                <div class="stat-header">
+                                    <span class="stat-icon">💪</span>
+                                    <span class="stat-name">Сила</span>
+                                    <span class="stat-value">0/100</span>
+                                </div>
+                                <div class="stat-bar">
+                                    <div class="stat-progress"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="radar-chart-container">
+                            <canvas id="radarChart" width="300" height="300"></canvas>
+                        </div>
+                    </div>
                 </div>
                 <div class="character-actions">
                     <button class="action-btn cancel-btn" id="cancelBtn">Скасувати</button>
@@ -621,37 +90,92 @@
 
     <!-- Game Screen -->
     <div id="gameScreen">
-        <h1>Екран гри</h1>
-        <div class="game-container">
-            <div id="gameBoard" role="grid" aria-label="Tic Tac Toe game board" tabindex="0">
-                <!-- Клітинки гри будуть додані через JavaScript -->
+        <div class="game-wrapper">
+            <div class="character-display left-character" style="padding-right: 20px;">
+                <img id="playerCharacterImg" src="" alt="Ваш персонаж">
+                <div class="timer-bar" id="playerTimer">
+                    <div class="timer-progress"></div>
+                </div>
             </div>
-            <svg id="strikeCanvas" aria-hidden="true" width="100%" height="100%"
-                style="position:absolute; top:0; left:0; z-index:10; pointer-events:none;">
-                <line id="strikeLine" x1="0" y1="0" x2="0" y2="0" style="opacity: 0;"></line>
-            </svg>
+            <div class="game-container">
+                <div id="gameBoard" role="grid" aria-label="Tic Tac Toe game board" tabindex="0">
+                    <!-- Клітинки гри будуть додані через JavaScript -->
+                </div>
+                <svg id="strikeCanvas" aria-hidden="true" width="100%" height="100%"
+                    style="position:absolute; top:0; left:0; z-index:10; pointer-events:none;">
+                    <line id="strikeLine" x1="0" y1="0" x2="0" y2="0" style="opacity: 0;"></line>
+                </svg>
 
-            <div id="scoreboard" aria-label="Races win scoreboard">
-                <div data-i18n="ticTacToeplayElvesScore" id="score-elves">Elves: 0</div>
-                <div data-i18n="ticTacToeplayOrcsScore" id="score-orcs">Orcs: 0</div>
-                <div data-i18n="ticTacToeplayDragonsScore" id="score-dragons">Dragons: 0</div>
-                <div data-i18n="ticTacToeplayDwarvesScore" id="score-dwarves">Dwarves: 0</div>
+                <div id="abilitiesContainer"></div>
+
+                <div id="scoreboard" aria-label="Races win scoreboard">
+                    <div data-i18n="ticTacToeplayElvesScore" id="score-elves">Elves: 0</div>
+                    <div data-i18n="ticTacToeplayOrcsScore" id="score-orcs">Orcs: 0</div>
+                    <div data-i18n="ticTacToeplayDragonsScore" id="score-dragons">Dragons: 0</div>
+                    <div data-i18n="ticTacToeplayDwarvesScore" id="score-dwarves">Dwarves: 0</div>
+                </div>
+
+                <div id="resultMessage"></div>
             </div>
 
-            <div id="resultMessage"></div>
-        </div>
+            <div class="character-display right-character">
+                <img id="enemyCharacterImg" src="" alt="Персонаж противника">
+                <div class="timer-bar" id="enemyTimer">
+                    <div class="timer-progress"></div>
+                </div>
+            </div>
 
-        <div id="gameModal" class="modal">
-            <div class="modal-content">
-                <div id="modalMessage" aria-live="polite"></div>
-                <button id="restartButton" class="modal-restart-btn" aria-label="Restart game">Restart Game</button>
-                <button id="backButton" class="modal-btn">Назад</button>
+            <div id="gameModal" class="modal">
+                <div class="modal-content">
+                    <div id="modalMessage" aria-live="polite"></div>
+                    <button id="restartButton" class="modal-restart-btn" aria-label="Restart game">Restart Game</button>
+                    <button id="backButton" class="modal-btn">Назад</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <script src="main.js"></script>
-    <script src="tic-tac-toe.js"></script>
+    <div class="rules-modal" id="rulesModal">
+        <div class="rules-content">
+            <span class="close-rules" id="closeRules">&times;</span>
+            <h2>Правила "Fantasy Realm"</h2>
+            <div class="rules-text">
+                <h3>Основні правила:</h3>
+                <ul>
+                    <li>Гравець обирає расу та грає проти іншої раси</li>
+                    <li>Кожна раса має унікальні здібності</li>
+                    <li>Перемагає той, хто першим збере лінію з 3 символів</li>
+                </ul>
+
+                <h3>Особливості рас:</h3>
+                <div class="race-rules">
+                    <div class="race-rule">
+                        <h4>Орки</h4>
+                        <p>Мають +10% до швидкості ходу, але менше здоров'я</p>
+                    </div>
+                    <div class="race-rule">
+                        <h4>Ельфи</h4>
+                        <p>Можуть блокувати одну клітинку кожні 2 ходи</p>
+                    </div>
+                    <div class="race-rule">
+                        <h4>Дракони</h4>
+                        <p>Можуть зробити 2 ходи поспіль кожні 2 ходи</p>
+                    </div>
+                    <div class="race-rule">
+                        <h4>Гноми</h4>
+                        <p>Мають +15% до захисту, але повільніші</p>
+                    </div>
+                </div>
+
+                <h3>Додатково:</h3>
+                <p>Гра триває до перемоги однієї з рас. Використовуйте стратегію!</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="static/js/main.js"></script>
+    <script src="static/js/tic-tac-toe.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 
 </html>

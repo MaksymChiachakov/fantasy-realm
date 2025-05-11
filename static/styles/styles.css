@@ -1,0 +1,1132 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  /* Блокуємо прокрутку */
+  overflow-x: hidden;
+  font-family: Arial, sans-serif;
+  background: rgba(0, 0, 0, 0.7);
+  transition: background-image 0.5s ease-in-out;
+  color: white;
+  /* transition: background-image 0.5s ease; */
+}
+
+.score {
+  transition: all 0.3s ease;
+
+  &.updated {
+    transform: scale(1.2);
+    color: #2ecc71;
+  }
+}
+
+.character-stats {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  max-height: 380px;
+
+  h3 {
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #8e44ad;
+  }
+}
+
+.stats-grid {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-item {
+  .stat-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .stat-icon {
+    font-size: 1.2rem;
+  }
+
+  .stat-name {
+    flex-grow: 1;
+    font-weight: bold;
+  }
+
+  .stat-value {
+    color: #8e44ad;
+  }
+}
+
+.stat-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.stat-progress {
+  transition: width 0.8s ease-in-out;
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1s ease;
+}
+
+.radar-chart-container {
+  width: 100%;
+  max-width: 275px;
+  max-height: 275px;
+  margin: 0 auto;
+}
+
+/* ппп */
+.slide-up {
+  animation: slideUp 0.5s ease-out forwards;
+}
+
+.slide-down {
+  animation: slideDown 0.5s ease-out forwards;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+}
+
+/* ппп */
+
+:root {
+  --user-color: #e74c3c;
+  --opponent-color: #3498db;
+  --board-bg: #1a1a2e;
+  --purple: #8e44ad;
+  --purple-dark: #5e2a6c;
+  --strike-color: #f1c40f;
+  --bg: #16213e;
+}
+
+/* Welcome Screen */
+.welcome-screen {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: all 1s ease;
+}
+
+.welcome-text {
+  font-size: 48px;
+  font-weight: bold;
+  margin: 0;
+  opacity: 1;
+  transition: all 1s ease;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.sub-text {
+  margin-top: 20px;
+  font-size: 24px;
+  opacity: 1;
+  transition: all 1s ease;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.arrow {
+  font-size: 40px;
+  margin-top: 40px;
+  cursor: pointer;
+  opacity: 0;
+  /* Спочатку невидима */
+  animation: fadeIn 0.5s ease-in-out 0.1s forwards;
+  /* Затримка 0.3s (300 мс) */
+  animation: bounce 1.5s infinite;
+}
+
+
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+/* Character Selection */
+.character-section {
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+  display: flex;
+  height: 100vh;
+  /* background: rgba(0, 0, 0, 0.7); */
+  /* background-image: url("../img/background.jpg"); */
+  color: white;
+  overflow: hidden;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  animation: none !important;
+  transition: none !important;
+  padding: 20px;
+}
+
+.slide-up,
+.slide-down,
+.fade-in {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Game Board */
+#gameBoard {
+  position: relative;
+  margin-top: 1rem;
+  background-color: var(--board-bg);
+  border: 4px solid var(--purple);
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 1/1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 6px;
+  /* тест */
+  transition: all 0.3s ease;
+  border-radius: 16px;
+  box-shadow: 0 0 18px var(--purple);
+  user-select: none;
+}
+
+#scoreboard {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-top: 1rem;
+  font-family: 'Uncial Antiqua', cursive;
+  font-size: 1.1rem;
+  color: var(--purple);
+  user-select: none;
+}
+
+#scoreboard div {
+  background-color: #1a1a2e;
+  padding: 0.3rem 0.8rem;
+  border: 2px solid var(--purple);
+  border-radius: 10px;
+  min-width: 80px;
+  text-align: center;
+  box-shadow: 0 0 10px var(--purple);
+}
+
+.cell {
+  border: 3px solid var(--purple);
+  border-radius: 12px;
+  background-color: var(--bg);
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--user-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.cell:focus {
+  outline: 3px solid var(--purple-dark);
+}
+
+.cell.occupied {
+  cursor: default;
+}
+
+.cell.opponent {
+  color: var(--opponent-color);
+}
+
+/* Strike-through line for winning */
+#strikeLine {
+  position: absolute;
+  pointer-events: none;
+  stroke: var(--strike-color);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: opacity 0.3s ease;
+}
+
+#strikeCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#resultMessage {
+  margin-top: 1rem;
+  font-family: 'Uncial Antiqua', cursive;
+  font-size: 1.5rem;
+  color: var(--purple-dark);
+  text-align: center;
+  min-height: 2em;
+  user-select: none;
+}
+
+/* Character Selection styles */
+.characters-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.character-arch {
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  width: 200px;
+  height: 300px;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.character-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.character-name {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px;
+  text-align: center;
+  font-size: 18px;
+  transform: translateY(100%);
+  transition: transform 0.3s;
+}
+
+.character-arch:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.character-arch:hover .character-name {
+  transform: translateY(0);
+}
+
+/* Character Detail */
+.character-detail {
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+  display: none;
+  height: 100vh;
+  padding: 40px;
+  background-size: cover;
+  background-position: center;
+  color: white;
+}
+
+.detail-container {
+  display: flex;
+  height: 80%;
+  margin-top: 40px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.character-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.detail-image {
+  width: 700px;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.character-nav {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.nav-arrow {
+  font-size: 30px;
+  cursor: pointer;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  transition: all 0.3s;
+}
+
+.nav-arrow:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.character-info {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.character-title {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.character-description {
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.character-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.action-btn {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.start-btn {
+  background: #8e44ad;
+  color: white;
+}
+
+.cancel-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.action-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.close-btn {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  font-size: 30px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.2);
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.game-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1300px;
+  /* Обмеження максимальної ширини */
+  padding: 0 20px;
+}
+
+/* Game Screen */
+#gameScreen {
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+  display: none;
+  /* flex-direction: column; */
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  /* position: fixed; */
+  /* padding: 0 20px; */
+  /* top: 0; */
+  /* left: 0; */
+  overflow: hidden;
+}
+
+.game-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  /* Відстань між елементами */
+  max-width: 1400px;
+  width: 100%;
+  padding: 0 20px;
+}
+
+.game-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 500px;
+}
+
+.cell {
+  position: relative;
+  border: 3px solid var(--purple);
+  border-radius: 12px;
+  background-color: var(--bg);
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--user-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  aspect-ratio: 1/1;
+}
+
+/* Стилі для лінії перемоги */
+#lineCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 480px;
+  height: 480px;
+  pointer-events: none;
+}
+
+#lineCanvas line {
+  stroke: var(--strike-color);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: opacity 0.3s ease;
+}
+
+.character-display {
+  width: 360px;
+  text-align: center;
+
+  img {
+    width: 350px;
+    height: 350px;
+    /* max-height: 500px; */
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.7));
+  }
+
+  .stats {
+    margin-top: 20px;
+    font-family: 'Uncial Antiqua', cursive;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+
+    .race-name {
+      font-size: 2rem;
+      margin-bottom: 6px;
+    }
+
+    .score {
+      font-size: 2.8rem;
+      font-weight: bold;
+    }
+  }
+}
+
+.left-character .race-name {
+  color: #3498db;
+  /* Синій для гравця */
+}
+
+.right-character .race-name {
+  color: #e74c3c;
+  /* Червоний для противника */
+}
+
+.health-bar {
+  height: 10px;
+  background: #333;
+  border-radius: 5px;
+  margin-top: 10px;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    display: block;
+    height: 100%;
+    background: #2ecc71;
+    width: 100%;
+  }
+}
+
+.timer-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin-bottom: 15px;
+  overflow: hidden;
+  position: relative;
+
+  .timer-progress {
+    transition: width linear, background-color 0.3s ease;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #f39c12, #f1c40f);
+    transition: width linear;
+    border-radius: 4px;
+  }
+
+  &.active {
+    .timer-progress {
+      background: linear-gradient(90deg, #2ecc71, #27ae60);
+    }
+  }
+
+  &.danger {
+    .timer-progress {
+      background: linear-gradient(90deg, #e74c3c, #c0392b);
+    }
+  }
+}
+
+/* Кнопка правил */
+.rules-btn {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #8e44ad, #9b59b6);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 100;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* Модальне вікно правил */
+.rules-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.rules-content {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  margin: 5% auto;
+  padding: 30px;
+  border-radius: 15px;
+  max-width: 800px;
+  width: 90%;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  color: white;
+  position: relative;
+  border: 2px solid #8e44ad;
+  box-shadow: 0 0 25px rgba(142, 68, 173, 0.5);
+}
+
+.close-rules {
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  font-size: 35px;
+  color: #aaa;
+  cursor: pointer;
+
+  &:hover {
+    color: white;
+  }
+}
+
+.rules-text {
+  font-family: 'Cinzel', serif;
+  line-height: 1.6;
+
+  h3 {
+    color: #f1c40f;
+    margin-top: 25px;
+    border-bottom: 1px solid #8e44ad;
+    padding-bottom: 5px;
+  }
+}
+
+.race-rules {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin: 20px 0;
+
+  .race-rule {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 10px;
+    border-left: 4px solid #8e44ad;
+
+    h4 {
+      color: #8e44ad;
+      margin-top: 0;
+    }
+  }
+}
+
+/* Адаптація для мобільних */
+@media (max-width: 768px) {
+  .rules-content {
+    margin: 10% auto;
+    padding: 20px;
+  }
+
+  .race-rules {
+    grid-template-columns: 1fr;
+  }
+
+  .rules-btn {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+}
+
+.ability-effect {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 15px 30px;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  z-index: 1000;
+  animation: fadeInOut 2s ease;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -40%);
+  }
+
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  80% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+}
+
+/* Стилі для блокування клітинок */
+/* .cell.blocked {
+  background-color: rgba(255, 0, 0, 0.2);
+  cursor: not-allowed;
+
+  &::after {
+    content: '🚫';
+    position: absolute;
+    font-size: 2rem;
+  }
+} */
+
+/* Кнопка блокування */
+#blockBtn {
+  margin: 15px auto;
+  background: #3498db;
+  display: block;
+
+  &.active {
+    background: #e74c3c;
+    animation: pulse 1s infinite;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Додайте ці стилі до вашого CSS файлу */
+.abilities-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  padding: 15px;
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  z-index: 100;
+  width: 80%;
+  max-width: 500px;
+}
+
+.ability-info {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #ffcc00;
+}
+
+.ability-cooldown {
+  font-size: 0.9em;
+  margin-bottom: 5px;
+  color: #aaa;
+}
+
+.ability-timer {
+  font-size: 0.9em;
+  color: #ccc;
+}
+
+.action-btn {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  margin-top: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.action-btn:hover {
+  background: #45a049;
+}
+
+.action-btn.active {
+  background: #f44336;
+  animation: pulse 1.5s infinite;
+}
+
+.cell.blockable {
+  background-color: rgba(0, 255, 0, 0.2);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.cell.blocked {
+  background-color: rgba(255, 0, 0, 0.2);
+  cursor: not-allowed;
+}
+
+.cell.blockable:hover {
+  background-color: rgba(0, 255, 0, 0.4);
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse-border {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 0, 0.7);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 255, 0, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 0, 0);
+  }
+}
+
+.turn-indicator {
+  font-size: 1.5rem;
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 0 5px #8e44ad;
+  transition: all 0.3s ease;
+}
+
+.game-container {
+  /* display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform: translateX(0);
+  opacity: 1; */
+  flex-grow: 1;
+  max-width: 500px;
+  margin: 0 20px;
+}
+
+
+/* Animations */
+.hidden {
+  opacity: 0;
+  transform: translateY(-100px);
+}
+
+.slide-down {
+  animation: slideDown 1s ease forwards;
+}
+
+.slide-up {
+  animation: slideUp 1s ease forwards;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Modal styles */
+.modal {
+  transition: opacity 0.5s ease-in-out;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #2c3e50;
+  padding: 2rem;
+  pointer-events: auto;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.modal-restart-btn {
+  background-color: #8e44ad;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.3s;
+}
+
+.modal-restart-btn:hover {
+  background-color: #9b59b6;
+  transform: translateY(-2px);
+}
+
+.logo {
+  font-family: 'Uncial Antiqua', cursive;
+  font-size: 1.8rem;
+  color: #fff;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.modal-btn {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-width: 150px;
+}
+
+.modal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#restartButton {
+  background-color: #8e44ad;
+  color: white;
+}
+
+#backButton {
+  background-color: #34495e;
+  color: white;
+}
+
+#mainText {
+  font-family: 'Courier New', monospace;
+  /* Стиль друкарської машинки */
+  white-space: pre-wrap;
+  /* Зберігаємо розриви рядків */
+  border-right: 3px solid #000;
+  /* Ефект курсора */
+  animation: blink 0.7s infinite;
+  /* Анімація миготіння курсора */
+  line-height: 1.5;
+  font-size: 48px;
+  text-align: center;
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    border-color: transparent;
+  }
+
+  50% {
+    border-color: #000;
+  }
+}
